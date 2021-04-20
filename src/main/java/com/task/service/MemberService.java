@@ -1,5 +1,7 @@
 package com.task.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +19,16 @@ public class MemberService {
 	}
 	
 	public void save(MemberVO vo) {
-		vo.setUserId("13");
-		vo.setUserName("jihun");
-		
 		memberRepository.save(vo);
 	}
+	
+	public boolean idCheck(String userId) {		
+		return memberRepository.findById(userId).isPresent();
+	}
+	
+	public boolean login(MemberVO vo) {
+		Optional<MemberVO> loginSucces = Optional.ofNullable(memberRepository.findMember(vo.getUserId(), vo.getUserPasswd()));		
+		return loginSucces.isPresent();
+	}
+	
 }

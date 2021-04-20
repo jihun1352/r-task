@@ -17,11 +17,10 @@ class MemberRepositoryTest {
 	}
 	
 	@Test
-	void test() {
-		MemberVO mem = new MemberVO();
-		mem.setUserId("1");
-		mem.setUserName("jihun");
-		System.out.println("id : "+mem.getId()+ " || name : "+mem.getUserName()+ " || seq: "+mem.getUserId());
+	void test(MemberVO mem) {
+		mem.setUserId("jihun");
+		mem.setUserPasswd("1234");
+		System.out.println( " || name : "+mem.getUserPasswd()+ " || seq: "+mem.getUserId());
 		memberRepository.save(mem);
 	}
 
