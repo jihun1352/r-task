@@ -15,7 +15,7 @@ import com.task.service.MemberService;
 @Controller
 public class MemberController {
 	
-	private MemberService memberService;
+	private final MemberService memberService;
 	
 	@Autowired
 	public MemberController(MemberService memberService) {
@@ -58,12 +58,10 @@ public class MemberController {
 	@PostMapping("/join")
 	public String joinf(MemberVO vo, RedirectAttributes redirectAttributes) {
 		
-		if(memberService.idCheck(vo.getUserId())) {
+		if(!memberService.save(vo)) {
 			redirectAttributes.addFlashAttribute("message", "이미 사용 중인 id 입니다.");
 			return "redirect:/join";
-		}
-		
-		memberService.save(vo);
+		};
 		
 		redirectAttributes.addFlashAttribute("message", "가입이 완료 되었습니다.");
 
