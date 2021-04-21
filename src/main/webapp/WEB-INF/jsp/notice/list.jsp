@@ -12,17 +12,29 @@
 						<th style="background-color: #eeeeee; text-align: center;">제목</th>
 						<th style="background-color: #eeeeee; text-align: center;">작성자</th>
 						<th style="background-color: #eeeeee; text-align: center;">첨부파일</th>
-						<th style="background-color: #eeeeee; text-align: center;">작성일</th>
+						<th style="background-color: #eeeeee; text-align: center;">작성일 </th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>작성일</td>
-						<td><a href="view.jsp?bbsID=aa>">작성일</a></td>
-						<td>작성일</td>
-						<td>작성일</td>
-						<td>작성일</td>
-					</tr>
+					<c:choose>
+						<c:when test="${fn:length(noticeList) > 0}">
+							<c:forEach var="result" items="${noticeList }" varStatus="status">
+								<fmt:parseDate value="${result.regDt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both" />
+								<tr>
+									<td>${fn:length(noticeList)-status.count+1 }</td>
+									<td><a href="view.jsp?bbsID=aa>"><c:out value="${result.subject}"/></a></td>
+									<td><c:out value="${result.regId}"/></td>
+									<td><c:out value="${result.subject}"/></td>
+									<td><fmt:formatDate pattern="yyyy.MM.dd HH:mm" value="${parsedDateTime }"/></td>
+								</tr>
+							</c:forEach>	
+						</c:when>	
+						<c:otherwise>
+							<tr>
+								<td colspan="5">데이터가 없습니다.</td>
+							</tr>
+						</c:otherwise>
+					</c:choose>	
 				</tbody>
 			</table>
 			</form>
@@ -38,7 +50,6 @@
 </html>
 <script type="text/javascript">
 	$(document).ready(function(){	
-		
 		if("${message}" != ''){ 	//  메세지
 			alert("${message }");
 		}		

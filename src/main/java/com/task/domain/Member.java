@@ -1,29 +1,25 @@
-package com.task.model;
+package com.task.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Getter
 @Entity
-@Table(name="member")
-public class MemberVO {
-	@Id
-	@Column(name="user_id")
+public class Member {
+	@Id	
 	private String userId;
-	@Column(name="user_passwd")
+	@Column(nullable = false)
 	private String userPasswd;
 	
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
+	@Builder
+	public Member(String userId, String userPasswd) {
 		this.userId = userId;
-	}
-	public String getUserPasswd() {
-		return userPasswd;
-	}
-	public void setUserPasswd(String userPasswd) {
 		this.userPasswd = userPasswd;
 	}
 		

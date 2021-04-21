@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.task.model.MemberVO;
+import com.task.domain.Member;
+import com.task.dto.MemberDTO;
 
 @SpringBootTest
 class MemberRepositoryTest {
@@ -17,11 +18,11 @@ class MemberRepositoryTest {
 	}
 	
 	@Test
-	void test(MemberVO mem) {
-		mem.setUserId("jihun");
-		mem.setUserPasswd("1234");
-		System.out.println( " || name : "+mem.getUserPasswd()+ " || seq: "+mem.getUserId());
-		memberRepository.save(mem);
+	void test(MemberDTO memberDto) {
+		memberDto.setUserId("jihun");
+		memberDto.setUserPasswd("1234");
+		System.out.println( " || name : "+memberDto.getUserPasswd()+ " || seq: "+memberDto.getUserId());
+		memberRepository.save(memberDto.toEntity());
 	}
 
 }
