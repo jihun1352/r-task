@@ -22,7 +22,7 @@
 								<fmt:parseDate value="${result.regDt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both" />
 								<tr>
 									<td>${fn:length(noticeList)-status.count+1 }</td>
-									<td><a href="view.jsp?bbsID=aa>"><c:out value="${result.subject}"/></a></td>
+									<td><a href="/notice/post/${result.id}"><c:out value="${result.subject}"/></a></td>
 									<td><c:out value="${result.regId}"/></td>
 									<td><c:out value="${result.subject}"/></td>
 									<td><fmt:formatDate pattern="yyyy.MM.dd HH:mm" value="${parsedDateTime }"/></td>
@@ -60,7 +60,7 @@
 			alert("로그인을 해주세요.");
 			$("#frm").attr({"action": "/login", "method": "get"}).submit();
 		} else {
-			$("#frm").attr({"action": "/write", "method": "get"}).submit();
+			$("#frm").attr({"action": "/notice/post", "method": "get"}).submit();
 		}
 	}
 </script>

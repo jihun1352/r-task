@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -36,12 +37,12 @@ public class NoticeController {
 	}
 
 	// 공지사항 등록 폼
-	@GetMapping("/write")
+	@GetMapping("/notice/post")
 	public String write() {		
 		return "notice/write";
 	}
 	// 공지사항 등록
-	@PostMapping("/write")
+	@PostMapping("/notice/post")
 	public String writef(NoticeDTO noticeDto, HttpServletRequest request, 
 			RedirectAttributes redirectAttributes) {		
 		noticeDto.setRegId((String) request.getSession().getAttribute("user_id"));
@@ -52,4 +53,14 @@ public class NoticeController {
 		
 		return "redirect:/";
 	}
+	
+	// 공지사항 수정 폼	
+	@GetMapping("/notice/post/{id}")
+	public String modify(@PathVariable("id") long id) {		
+		
+		System.out.println("!@#!@#" + id);
+		
+		return "notice/modify";
+	}
+	
 }

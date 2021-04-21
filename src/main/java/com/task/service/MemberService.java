@@ -22,7 +22,7 @@ public class MemberService {
 	
 	public boolean save(MemberDTO memberDto) {
 		// 아이디 중복 체크
-		if(memberRepository.findById(memberDto.getUserId()).isPresent()) {
+		if(memberRepository.findByUserId(memberDto.getUserId()).isPresent()) {
 			return false;
 		}
 		
@@ -37,13 +37,12 @@ public class MemberService {
 	
 	public boolean login(MemberDTO memberDto) {
 		
-		System.out.println("!!!= > "+memberRepository.findByUserId(memberDto.getUserId()));
-		
 		// 아이디가 없을 경우
-		if(!memberRepository.findById(memberDto.getUserId()).isPresent()) {
-			return false;
+		if(!memberRepository.findByUserId(memberDto.getUserId()).isPresent()) { 
+			return false; 
 		}
-		Optional<Member> mem = memberRepository.findById(memberDto.getUserId());		
+		 
+		Optional<Member> mem = memberRepository.findByUserId(memberDto.getUserId());
 		
 		return passwordEncoder.matches(memberDto.getUserPasswd(), mem.get().getUserPasswd());
 	}

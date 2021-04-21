@@ -20,7 +20,7 @@
 						</tr>
 					</tbody>
 				</table>	
-				<a href="javascript:fncWriteIns();" class="btn btn-primary pull-right" >글쓰기</a>
+				<a href="javascript:fncModify();" class="btn btn-primary pull-right" >글쓰기</a>
 			</form>
 		</div>
 	</div>
@@ -34,11 +34,11 @@
 		}		
 	});
 
-	function fncWriteIns() {
+	function fncModify() {
 		alert("${user_id}");
 		
-		if(confirm("등록하시겠습니까?")) {
-			$("#frm").attr({"action":"/notice/post", "method": "post"}).submit();
+		if(confirm("수정하시겠습니까?")) {
+			$("#frm").attr({"action":"/write", "method": "put"}).submit();
 		};
 	}
 </script>
