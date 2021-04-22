@@ -2,7 +2,6 @@ package com.task.dto;
 
 import java.time.LocalDateTime;
 
-import com.task.domain.BaseEntity;
 import com.task.domain.Notice;
 
 import lombok.Builder;

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.task.domain.Member;
 import com.task.dto.MemberDTO;
@@ -20,6 +21,7 @@ public class MemberService {
 		this.passwordEncoder = passwordEncoder;
 	}
 	
+	@Transactional
 	public boolean save(MemberDTO memberDto) {
 		// 아이디 중복 체크
 		if(memberRepository.findByUserId(memberDto.getUserId()).isPresent()) {
@@ -35,6 +37,7 @@ public class MemberService {
 		return true;
 	}
 	
+	@Transactional
 	public boolean login(MemberDTO memberDto) {
 		
 		// 아이디가 없을 경우
