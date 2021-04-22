@@ -39,8 +39,27 @@
 			</table>
 			</form>
 			<!-- 페이지 넘기기 -->
-			
+			<div>
+				<c:forEach var="pageNum" items="${pageList }" varStatus="status">
+					<a href="/?page=${pageNum }">${pageNum }</a>
+				</c:forEach>
+			</div>
 			<!-- 회원만넘어가도록 -->
+			<div class="container">
+			<div class="row">
+				<div class="col">
+					<p><strong>Pagination</strong></p>
+					<ul class="pagination">
+							<li class="page-item"><a class="page-link" href="#">Previous</a></li>
+						<%-- <c:forEach var="pageNum" items="${pageList }" varStatus="status">
+							<li class="page-item"><a class="page-link" href="/?page=${pageNum }">${pageNum }</a></li>
+						</c:forEach> --%>	
+							<li class="page-item"><a class="page-link" href="#">1</a></li>
+							<li class="page-item"><a class="page-link" href="#">Next</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
 	
 	
 			<a href="javascript:fncWrite();" class="btn btn-primary pull-right">글쓰기</a>

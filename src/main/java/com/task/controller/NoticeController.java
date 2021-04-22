@@ -1,5 +1,6 @@
 package com.task.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.task.domain.Notice;
@@ -27,9 +29,12 @@ public class NoticeController {
 
 	// 공지사항 목록
 	@GetMapping("/")
-	public String hello(Model model) {
+	public String hello(Model model, @RequestParam(value="page", defaultValue = "1") Integer pageNum) {
 		
-		List<NoticeDTO> list = noticeService.list();
+		List<NoticeDTO> list = noticeService.list(pageNum);
+		
+		Integer[] pageList = noticeService.getPageList(pageNum);
+		model.addAttribute("pageList", pageList);
 		
 		model.addAttribute("noticeList", list);
 		
