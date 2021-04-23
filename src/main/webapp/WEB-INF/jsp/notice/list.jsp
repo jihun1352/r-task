@@ -23,7 +23,7 @@
 								<tr>
 									<td>${result.id }</td>
 									<td><a href="/notice/${result.id}/${noticeList.pageable.pageNumber}"><c:out value="${result.subject}"/></a></td>
-									<td><c:out value="${result.regId}"/> <c:out value="${status.count}"/></td>
+									<td><c:out value="${result.regId}"/></td>
 									<td><c:out value="${result.subject}"/></td>
 									<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedDateTime }"/></td>
 								</tr>

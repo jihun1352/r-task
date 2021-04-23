@@ -1,12 +1,14 @@
 # r-task
 
-// 환경 </br>
-spring boot, maven, java11, jsp, eclipse </br>
+// 개발 환경 </br>
+Spring boot 2.3.10, Maven, Hibernate/JPA ,Java11, jsp, H2, BootStrap-3.3.7 </br>
 
-// 접속 방법
+// 접속 방법	</br>
 웹페이지    : http://localhost:8080  </br>
-h2 웹 콘솔 : http://localhost:8080/h2
+h2 웹 콘솔 : http://localhost:8080/h2	</br>
 
+// 첨부파일 경로 </br>
+프로젝트 경로인 /r-task/upload/     </br>
 
 회원가입/로그인 기능 </br>
 로그인시 세션에 user_id 값을 담는다.
@@ -20,7 +22,7 @@ h2 웹 콘솔 : http://localhost:8080/h2
 
 // history </br>
 로그아웃 상태에서 write로 접속했을때 글쓰기하면 튕기도록 설정하기   </br>
-첨부파일 attach_file_id 초기값 설정
+regId도 baseEntity에 넣어보기 추가로 세션 관리 jpa방식으로
 
 
 // 기재 사항 </br>

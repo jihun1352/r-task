@@ -25,10 +25,10 @@ public class Notice extends BaseEntity{
 	private String content;
 	@Column(nullable = false)
 	private String regId;
-	private String attachFileId;
+	private Long attachFileId;
 	
 	@Builder
-	public Notice(String subject, String content, String regId, String attachFileId) {
+	public Notice(String subject, String content, String regId, Long attachFileId) {
 		this.subject = subject;
 		this.content = content;
 		this.regId = regId;

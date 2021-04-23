@@ -1,13 +1,23 @@
 package com.task.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +31,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.task.domain.Notice;
+import com.task.dto.AttachFileDTO;
 import com.task.dto.NoticeDTO;
 import com.task.service.AttachFileService;
 import com.task.service.NoticeService;
@@ -61,6 +72,10 @@ public class NoticeController {
 	public String view(@PathVariable("id") long id, Model model, @PathVariable("pageNum") long pageNum) {
 		NoticeDTO noticeDto = noticeService.view(id);
 		
+		List<AttachFileDTO> fileList = attachfileService.fileList(noticeDto.getAttachFileId());
+		
+		model.addAttribute("fileList", fileList);
+		
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("result", noticeDto);
 		
@@ -77,19 +92,18 @@ public class NoticeController {
 	public String writef(NoticeDTO noticeDto, HttpServletRequest request, 
 			RedirectAttributes redirectAttributes, MultipartHttpServletRequest multipartRequest,
 			@RequestParam("files") List<MultipartFile> files1,
-			@RequestPart List<MultipartFile> files) throws Exception {
+			@RequestPart List<MultipartFile> files) {
 		
 		System.out.println("@@@ ==> "+ multipartRequest);
 		System.out.println("@@@ ==> "+ files1);
 		System.out.println("@@@ ==> "+ files);
 		
-		// 첨부파일 업로드
-		String attachFileId = attachfileService.save(multipartRequest, "0", "notice");
-		
 		noticeDto.setRegId((String) request.getSession().getAttribute("user_id"));
-		noticeDto.setAttachFileId(attachFileId);
 		
-		System.out.println("attachFileId => "+attachFileId);
+		// 첨부파일 업로드
+		Long attachFileId = attachfileService.save(multipartRequest, (long) 0, "notice");
+				
+		noticeDto.setAttachFileId(attachFileId);
 		
 		noticeService.save(noticeDto);
 		
@@ -115,4 +129,27 @@ public class NoticeController {
 		return "notice/modify";
 	}
 	
+	// 첨부 다운로드
+	@GetMapping("/download/{id}/{attachFileId}")
+	public ResponseEntity<Resource> download(@PathVariable("id") long id, @PathVariable("attachFileId") long attachFileId) throws IOException {
+		
+		AttachFileDTO fileDto = attachfileService.getFile(id, attachFileId);
+		
+		File file = new File("upload");		
+		String uploadPath = file.getAbsoluteFile().toString();
+		
+		String filePath = uploadPath+fileDto.getFilePath()+"\\"+fileDto.getAliasName();
+		
+		Path path = Paths.get(filePath);
+		System.out.println("경로 => "+uploadPath+fileDto.getFilePath()+"\\"+fileDto.getAliasName()+"."+fileDto.getFileExt());
+
+		Resource resource = new InputStreamResource(Files.newInputStream(path));
+		
+		// 한글 파일 다운로드시 인코딩 깨짐 현상 처리
+		String fileName = new String(fileDto.getOriginalName().getBytes("UTF-8"), "ISO-8859-1");
+		return ResponseEntity.ok()
+	            .contentType(MediaType.parseMediaType("application/octet-stream"))
+	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+	            .body(resource);
+	}
 }

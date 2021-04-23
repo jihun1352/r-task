@@ -2,14 +2,18 @@ package com.task.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.task.domain.AttachFile;
 import com.task.dto.AttachFileDTO;
 import com.task.repository.AttachFileRepository;
 
@@ -23,9 +27,9 @@ public class AttachFileService {
 	}
 	
 	@Transactional
-	public String save(MultipartHttpServletRequest multipartRequest, String attachID, String flag) throws Exception {
+	public Long save(MultipartHttpServletRequest multipartRequest, Long attachID, String flag) {
 		
-		String attachFileId = "";
+		Long attachFileId = (long) 0;
 		final Map<String, MultipartFile> files = multipartRequest.getFileMap();
 		File f = new File("upload");
 		
@@ -45,8 +49,9 @@ public class AttachFileService {
 				filePath = getPath(uploadPath, flag);
 				fullFilePath = uploadPath + filePath;
 
-				if (attachID.equals("0")) {
-					attachFileId = attachFileRepository.maxAttachFileId();
+				if (attachID.equals((long)0)) {
+					// 첫 데이터인 경우 attachFileId = 1로 지정
+					attachFileId = attachFileRepository.count()==0?(long)1:attachFileRepository.maxAttachFileId();
 				}else{
 					attachFileId = attachID;
 				}
@@ -62,21 +67,27 @@ public class AttachFileService {
 					if (originalName.equals("")) {
 						continue;
 					}
-
+					
 					int index = originalName.lastIndexOf(".");
 					String fileExt = originalName.substring(index + 1);
-					String aliasName = "1111" + "_" + i;
+					String aliasName = UUID.randomUUID().toString().replaceAll("-", "") + i;
 
-					file.transferTo(new File(fullFilePath + File.separator + aliasName));
-
-					fileDto = new AttachFileDTO();
-					fileDto.setAttachFileId(attachFileId);
-					fileDto.setOriginalName(originalName);
-					fileDto.setAliasName(aliasName);
-					fileDto.setFileExt(fileExt);
-					fileDto.setFilePath(filePath);					
-					
-					attachFileRepository.save(fileDto.toEntity());
+					try {	
+						file.transferTo(new File(fullFilePath + File.separator + aliasName));
+	
+						fileDto = new AttachFileDTO();
+						fileDto.setAttachFileId(attachFileId);
+						fileDto.setOriginalName(originalName);
+						fileDto.setAliasName(aliasName);
+						fileDto.setFileExt(fileExt);
+						fileDto.setFilePath(filePath);					
+						
+						attachFileRepository.save(fileDto.toEntity());
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -85,7 +96,7 @@ public class AttachFileService {
 	}	
 	
 	// 파일 업로드 경로 생성
-	public static String getPath(String path1, String path2) throws Exception {
+	public static String getPath(String path1, String path2) {
 		Calendar oCalendar = Calendar.getInstance();
 		String tempFilePath = File.separator + path2 + File.separator + oCalendar.get(Calendar.YEAR) + File.separator
 				+ (oCalendar.get(Calendar.MONTH) + 1) + File.separator + oCalendar.get(Calendar.DAY_OF_MONTH);
@@ -96,11 +107,46 @@ public class AttachFileService {
 		if (!targetDir.exists()) {
 			if (targetDir.mkdirs()) {				
 				return filePath;
-			} else {
-				throw new Exception("업로드 디렉토리 생성 실패! \n 업로드 경로 : " + fullFilePath);
-			}
+			} 
 		}
 		return filePath;
+	}
+	
+	@Transactional
+	public List<AttachFileDTO> fileList(Long attachId) {
+		List<AttachFile> fileList = attachFileRepository.findAllByAttachFileId(attachId);
+		
+		List<AttachFileDTO> fileDtoList = new ArrayList<AttachFileDTO>();
+		
+		for(AttachFile file : fileList) {
+			AttachFileDTO fileDto = AttachFileDTO.builder()
+					.id(file.getId())
+					.attachFileId(file.getAttachFileId())
+					.originalName(file.getOriginalName())
+					.aliasName(file.getAliasName())
+					.filePath(file.getFilePath())
+					.fileExt(file.getFileExt())
+					.build();
+			
+			fileDtoList.add(fileDto);
+		}
+		return fileDtoList;
+	}
+	
+	@Transactional
+	public AttachFileDTO getFile(Long id, Long attachFileId) {
+		AttachFile file = attachFileRepository.findByIdAndAttachFileId(id, attachFileId);
+		
+		AttachFileDTO fileDto = AttachFileDTO.builder()
+				.id(file.getId())
+				.attachFileId(file.getAttachFileId())
+				.originalName(file.getOriginalName())
+				.aliasName(file.getAliasName())
+				.filePath(file.getFilePath())
+				.fileExt(file.getFileExt())
+				.build();
+		
+		return fileDto;
 	}
 	
 }
