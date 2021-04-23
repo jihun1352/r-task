@@ -1,15 +1,10 @@
 package com.task.domain;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -30,12 +25,14 @@ public class Notice extends BaseEntity{
 	private String content;
 	@Column(nullable = false)
 	private String regId;
+	private String attachFileId;
 	
 	@Builder
-	public Notice(String subject, String content, String regId) {
+	public Notice(String subject, String content, String regId, String attachFileId) {
 		this.subject = subject;
 		this.content = content;
 		this.regId = regId;
+		this.attachFileId = attachFileId;
 	}
 	
 }

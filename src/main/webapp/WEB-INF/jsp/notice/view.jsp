@@ -33,7 +33,7 @@
 					</tr>
 				</tbody>	
 			</table>	
-			<a href="bbs.jsp" class="btn btn-primary text-right">목록</a>
+			<a href="/?page=${pageNum}" class="btn btn-primary text-right">목록</a>
 			<c:if test="${user_id eq result.regId }">
 				<a href="update.jsp?bbsID=" class="btn btn-primary text-right">수정</a>	
 				<a href="delete.jsp?bbsID=" class="btn btn-primary text-right">삭제</a>

@@ -3,7 +3,7 @@
 	<!-- 글작성 페이지 -->
 	<div class="container">
 		<div class="row">
-			<form id="frm" name="frm">
+			<form id="frm" name="frm" enctype="multipart/form-data">
 				<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
 					<thead>
 						<tr>
@@ -13,10 +13,14 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><input type="text" class="form-control" placeholder="글 제목" name="subject" maxlength="50"/></td>
+							<td colspan="2"><input type="text" class="form-control" placeholder="글 제목" name="subject" maxlength="50"/></td>
 						</tr>
 						<tr>
-							<td><textarea class="form-control" placeholder="글 내용" name="content" maxlength="2048" style="height: 350px;"></textarea></td>
+							<td colspan="2"><textarea class="form-control" placeholder="글 내용" name="content" maxlength="2048" style="height: 350px;"></textarea></td>
+						</tr>
+						<tr>
+							<th style="width: 10%;">첨부파일</th>
+							<td class="text-left"><input multiple type="file" name="file0"/></td>
 						</tr>
 					</tbody>
 				</table>	

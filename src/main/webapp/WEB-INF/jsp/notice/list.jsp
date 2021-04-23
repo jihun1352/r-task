@@ -21,9 +21,9 @@
 							<c:forEach var="result" items="${noticeList.content }" varStatus="status">
 								<fmt:parseDate value="${result.regDt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both" />
 								<tr>
-									<td>${noticeList.totalElements-status.count+1 }</td>
-									<td><a href="/notice/${result.id}"><c:out value="${result.subject}"/></a></td>
-									<td><c:out value="${result.regId}"/></td>
+									<td>${result.id }</td>
+									<td><a href="/notice/${result.id}/${noticeList.pageable.pageNumber}"><c:out value="${result.subject}"/></a></td>
+									<td><c:out value="${result.regId}"/> <c:out value="${status.count}"/></td>
 									<td><c:out value="${result.subject}"/></td>
 									<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedDateTime }"/></td>
 								</tr>

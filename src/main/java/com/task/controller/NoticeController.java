@@ -1,5 +1,7 @@
 package com.task.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.data.domain.Page;
@@ -12,26 +14,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.task.domain.Notice;
 import com.task.dto.NoticeDTO;
+import com.task.service.AttachFileService;
 import com.task.service.NoticeService;
 
 @Controller
 public class NoticeController {
 	
 	private final NoticeService noticeService;
+	private final AttachFileService attachfileService;
 	
-	public NoticeController(NoticeService noticeService) {
+	public NoticeController(NoticeService noticeService, AttachFileService attachfileService) {
 		this.noticeService = noticeService;
+		this.attachfileService = attachfileService;
 	}
 
 	// 공지사항 목록
 	@GetMapping("/")
-	public String hello(@PageableDefault(size=1,sort="id",direction = Sort.Direction.DESC) Pageable pageable,
-			Model model, Integer pageNum) {
-		
+	public String hello(@PageableDefault(size=2,sort="id",direction = Sort.Direction.DESC) Pageable pageable,
+			Model model) {
 		Page<Notice> list = noticeService.list(pageable); 
 		
 		int pageNumber = list.getPageable().getPageNumber();	//현재페이지
@@ -49,11 +57,11 @@ public class NoticeController {
 	}
 	
 	// 공지사항 상세 조회
-	@GetMapping("/notice/{id}")
-	public String view(@PathVariable("id") long id, Model model) {
-		
+	@GetMapping("/notice/{id}/{pageNum}")
+	public String view(@PathVariable("id") long id, Model model, @PathVariable("pageNum") long pageNum) {
 		NoticeDTO noticeDto = noticeService.view(id);
 		
+		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("result", noticeDto);
 		
 		return "notice/view";
@@ -67,8 +75,21 @@ public class NoticeController {
 	// 공지사항 등록
 	@PostMapping("/notice/post")
 	public String writef(NoticeDTO noticeDto, HttpServletRequest request, 
-			RedirectAttributes redirectAttributes) {		
+			RedirectAttributes redirectAttributes, MultipartHttpServletRequest multipartRequest,
+			@RequestParam("files") List<MultipartFile> files1,
+			@RequestPart List<MultipartFile> files) throws Exception {
+		
+		System.out.println("@@@ ==> "+ multipartRequest);
+		System.out.println("@@@ ==> "+ files1);
+		System.out.println("@@@ ==> "+ files);
+		
+		// 첨부파일 업로드
+		String attachFileId = attachfileService.save(multipartRequest, "0", "notice");
+		
 		noticeDto.setRegId((String) request.getSession().getAttribute("user_id"));
+		noticeDto.setAttachFileId(attachFileId);
+		
+		System.out.println("attachFileId => "+attachFileId);
 		
 		noticeService.save(noticeDto);
 		

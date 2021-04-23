@@ -17,6 +17,7 @@ public class NoticeDTO {
 	private String subject;
 	private String content;
 	private String regId;
+	private String attachFileId;
 	private LocalDateTime regDt;
 	private LocalDateTime uptDt;
 	
@@ -25,16 +26,18 @@ public class NoticeDTO {
 					 .subject(subject)
 					 .content(content)
 					 .regId(regId)
+					 .attachFileId(attachFileId)
 					 .build();
 	}
 
 	@Builder
-	public NoticeDTO(Long id, String subject, String content, String regId, 
+	public NoticeDTO(Long id, String subject, String content, String regId, String attachFileId,
 			LocalDateTime regDt, LocalDateTime uptDt ) {
 		this.id = id;
 		this.subject = subject;
 		this.content = content;
 		this.regId = regId;
+		this.attachFileId = attachFileId;
 		this.regDt = regDt;
 		this.uptDt = uptDt;
 	}

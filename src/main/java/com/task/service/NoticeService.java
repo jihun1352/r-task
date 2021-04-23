@@ -34,13 +34,13 @@ public class NoticeService {
 		Optional<Notice> noticeOp = noticeRepository.findById(id);
 		
 		Notice notice = noticeOp.get();
-		System.out.println("@@@=> " + notice);
 		
 		NoticeDTO noticeDto = NoticeDTO.builder()
 				.id(notice.getId())
 				.subject(notice.getSubject())
 				.content(notice.getContent())
 				.regId(notice.getRegId())
+				.attachFileId(notice.getAttachFileId())
 				.regDt(notice.getRegDt())
 				.uptDt(notice.getUptDt())
 				.build();
