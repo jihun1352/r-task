@@ -28,7 +28,8 @@ public class Notice extends BaseEntity{
 	private Long attachFileId;
 	
 	@Builder
-	public Notice(String subject, String content, String regId, Long attachFileId) {
+	public Notice(Long id, String subject, String content, String regId, Long attachFileId) {
+		this.id = id;
 		this.subject = subject;
 		this.content = content;
 		this.regId = regId;

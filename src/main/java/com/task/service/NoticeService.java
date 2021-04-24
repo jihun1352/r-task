@@ -30,6 +30,7 @@ public class NoticeService {
 		return noticeRepository.findAll(pageable);
 	}
 	
+	@Transactional
 	public NoticeDTO view(long id) {
 		Optional<Notice> noticeOp = noticeRepository.findById(id);
 		
@@ -46,6 +47,12 @@ public class NoticeService {
 				.build();
 		
 		return noticeDto;
+	}
+	
+	@Transactional
+	public void delete(long id) {
+		System.out.println("@@delete "+id);
+		noticeRepository.deleteById(id);
 	}
 	
 }

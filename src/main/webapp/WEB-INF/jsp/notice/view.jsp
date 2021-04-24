@@ -3,6 +3,7 @@
 	<!-- 상세 페이지 -->	
 	<div class="container">	
 		<div class="row">	
+			<form id="frm" name="frm">
 			<table class="table table-striped"	style="text-align: center; border: 1px solid #dddddd">	
 				<thead>	
 					<tr>	
@@ -35,7 +36,6 @@
 									<br />
 									</c:when>
 								</c:choose>	
-								<%-- <a class="file_img" href='${pageContext.request.contextPath}/<c:out value='${authValue }' />/file/down0010f.do?attach_file_id=<c:out value="${result.attach_file_id }"/>&amp;file_seq=<c:out value="${result.file_seq }"/>&amp;alias_name=<c:out value="${result.alias_name }"/>' alt="<c:out value="${result.original_name }"/> 파일 다운로드" title="<c:out value="${result.original_name }"/> 파일 다운로드" ><img src="${pageContext.request.contextPath}/common/img/fileIcon/icon_<c:out value="${file_extsn }" />.png" alt="첨부"/>&nbsp;<c:out value="${result.original_name }"/></a> --%>
 								<a href='/download/${result.id}/${result.attachFileId}'><c:out value="${result.originalName }"/></a>
 							</c:forEach>
 						</td>
@@ -49,10 +49,28 @@
 			</table>	
 			<a href="/?page=${pageNum}" class="btn btn-primary text-right">목록</a>
 			<c:if test="${user_id eq result.regId }">
-				<a href="update.jsp?bbsID=" class="btn btn-primary text-right">수정</a>	
-				<a href="delete.jsp?bbsID=" class="btn btn-primary text-right">삭제</a>
+				<a href="/notice/post/${id}" class="btn btn-primary text-right">수정</a>
+				<input type="hidden" name="_method" value="delete">
+				<a href="javascript:fncDelete();" class="btn btn-primary text-right">삭제</a>
 			</c:if>
+			</form>
 		</div>
 	</div>
 </body>
 </html>
+<script type="text/javascript">
+$(document).ready(function(){	
+	
+	if("${message}" != ''){ 	//  메세지
+		alert("${message }");
+	}		
+});
+
+function fncDelete() {
+	id = "${result.id}";
+	if(confirm("삭제 하시겠습니까?")) {
+		$("#frm").attr({"action": "/notice/post/"+id, "method": "post"}).submit();
+	};
+}
+
+</script>

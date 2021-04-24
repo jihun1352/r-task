@@ -8,7 +8,7 @@
 .reply .re_left span b{font-weight: 700;margin-right:10px;color: #000}
 .reply .re_right{float: right; text-align: right;margin-top: 10px}
 </style>
-	<!-- 글작성 페이지 -->
+	<!-- 공지사항 등록 페이지 -->
 	<div class="container">
 		<div class="row">
 			<form id="frm" name="frm" enctype="multipart/form-data">
@@ -16,7 +16,7 @@
 					<thead>
 						<tr>
 							<th colspan="2"
-								style="background-color: #eeeeee; text-align: center;">공지사항 글 등록</th>
+								style="background-color: #eeeeee; text-align: center;">공지사항 등록</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -28,7 +28,6 @@
 						</tr>
 						<tr>
 							<th style="width: 10%;">첨부파일</th>
-							<!-- <td class="text-left"><input multiple type="file" name="file0"/></td> -->
 							<td class="text-left">
 								<div class="reply_area">
 								<div class="reply">

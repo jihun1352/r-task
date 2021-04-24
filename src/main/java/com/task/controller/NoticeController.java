@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,8 @@ public class NoticeController {
 	public String hello(@PageableDefault(size=2,sort="id",direction = Sort.Direction.DESC) Pageable pageable,
 			Model model) {
 		Page<Notice> list = noticeService.list(pageable); 
+		
+		System.out.println("list " + pageable);
 		
 		int pageNumber = list.getPageable().getPageNumber();	//현재페이지
 		int totalPage = list.getTotalPages();					//총 페이지 수
@@ -114,9 +117,15 @@ public class NoticeController {
 	
 	// 공지사항 수정 폼	
 	@GetMapping("/notice/post/{id}")
-	public String modify(@PathVariable("id") long id) {		
+	public String modify(@PathVariable("id") long id, Model model) {		
 		
-		System.out.println("!@#!@#" + id);
+		NoticeDTO noticeDto = noticeService.view(id);
+		
+		List<AttachFileDTO> fileList = attachfileService.fileList(noticeDto.getAttachFileId());
+		
+		model.addAttribute("fileList", fileList);
+		
+		model.addAttribute("result", noticeDto);
 		
 		return "notice/modify";
 	}
@@ -124,9 +133,20 @@ public class NoticeController {
 	@PutMapping("/notice/post/{id}")
 	public String modifyf(@PathVariable("id") long id) {
 
-		System.out.println("!@#!@#" + id);
+		
+		
+		System.out.println("!@#!@#modifyf" + id);
 
 		return "notice/modify";
+	}
+	
+	// 공지사항 삭제
+	@DeleteMapping("/notice/post/{id}")
+	public String delete(@PathVariable("id") long id, RedirectAttributes redirectAttributes) {
+		noticeService.delete(id);
+		redirectAttributes.addFlashAttribute("message", "삭제 되었습니다.");
+		
+		return "redirect:/";
 	}
 	
 	// 첨부 다운로드
