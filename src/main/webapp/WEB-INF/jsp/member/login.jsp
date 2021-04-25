@@ -27,7 +27,6 @@
 </html>	
 <script type="text/javascript">
 	$(document).ready(function(){	
-		
 		if("${message}" != ''){ 	//  메세지
 			alert("${message }");
 		}		

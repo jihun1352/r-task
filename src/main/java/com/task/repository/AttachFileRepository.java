@@ -10,9 +10,9 @@ import com.task.domain.AttachFile;
 public interface AttachFileRepository extends JpaRepository<AttachFile, Long> {
 	
 	@Query("select max(attach_file_id)+1 from AttachFile m")
-	public Long maxAttachFileId();
+	public long maxAttachFileId();
 	
-	List<AttachFile> findAllByAttachFileId(Long attachFileId);
+	public List<AttachFile> findAllByAttachFileId(Long attachFileId);
 	
 	public AttachFile findByIdAndAttachFileId(Long id, Long attachFileId); 
 	

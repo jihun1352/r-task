@@ -15,7 +15,8 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <!-- 부트스트랩 JS  -->
 <script src="/resources/js/bootstrap.js"></script>
-<title>jsp 게시판 웹사이트</title>
+<script src="/resources/js/cmmn.js"></script>
+<title>R-Support TASK.</title>
 </head>
 <body>
 	<!-- 네비게이션  -->
@@ -32,22 +33,15 @@
 
 		<div class="collapse navbar-collapse" id="#bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="/">게시판</a></li>
+				<li><a href="/">공지사항</a></li>
 			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<!-- <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-						aria-expanded="false">접속하기<span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li class="active"><a href="/login">로그인</a></li>
-							<li><a href="/join">회원가입</a></li>
-						</ul>
-					</li> -->
+			<ul class="nav navbar-nav navbar-right">				
 				<c:if test="${user_id eq null }">	
 					<li><a href="/login">로그인</a></li>
 					<li><a href="/join">회원가입</a></li>
 				</c:if>	
 				<c:if test="${user_id ne null }">
-					<li><strong><c:out value="${user_id }"/></strong>님</li>
+					<li style="margin-top:15px;"><strong><c:out value="${user_id }"/></strong>님</li>
 					<li><a href="/logout">로그아웃</a></li>
 				</c:if>
 			</ul>

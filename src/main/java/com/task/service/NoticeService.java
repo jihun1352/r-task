@@ -31,7 +31,7 @@ public class NoticeService {
 	}
 	
 	@Transactional
-	public NoticeDTO view(long id) {
+	public NoticeDTO view(Long id) {
 		Optional<Notice> noticeOp = noticeRepository.findById(id);
 		
 		Notice notice = noticeOp.get();
@@ -50,9 +50,7 @@ public class NoticeService {
 	}
 	
 	@Transactional
-	public void delete(long id) {
-		System.out.println("@@delete "+id);
+	public void delete(Long id) {
 		noticeRepository.deleteById(id);
 	}
-	
 }

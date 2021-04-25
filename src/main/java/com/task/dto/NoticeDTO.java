@@ -2,6 +2,7 @@ package com.task.dto;
 
 import java.time.LocalDateTime;
 
+import com.task.domain.BaseEntity;
 import com.task.domain.Notice;
 
 import lombok.Builder;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NoticeDTO {
+public class NoticeDTO extends BaseEntity {
 	private Long id;
 	private String subject;
 	private String content;
@@ -23,6 +24,7 @@ public class NoticeDTO {
 	
 	public Notice toEntity() {
 		return Notice.builder()
+					 .id(id)
 					 .subject(subject)
 					 .content(content)
 					 .regId(regId)
@@ -41,5 +43,6 @@ public class NoticeDTO {
 		this.regDt = regDt;
 		this.uptDt = uptDt;
 	}
+
 	
 }

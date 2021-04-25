@@ -16,7 +16,7 @@ public class AttachFile {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
 	private Long attachFileId;	
 	private String originalName;
 	private String aliasName;
@@ -32,4 +32,5 @@ public class AttachFile {
 		this.filePath = filePath;
 		this.fileExt = fileExt;
 	}
+	
 }

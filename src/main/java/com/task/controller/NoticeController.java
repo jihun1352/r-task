@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,10 +27,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.task.domain.Notice;
 import com.task.dto.AttachFileDTO;
@@ -50,11 +51,9 @@ public class NoticeController {
 
 	// 공지사항 목록
 	@GetMapping("/")
-	public String hello(@PageableDefault(size=2,sort="id",direction = Sort.Direction.DESC) Pageable pageable,
+	public String hello(@PageableDefault(size=5,sort="id",direction = Sort.Direction.DESC) Pageable pageable,
 			Model model) {
 		Page<Notice> list = noticeService.list(pageable); 
-		
-		System.out.println("list " + pageable);
 		
 		int pageNumber = list.getPageable().getPageNumber();	//현재페이지
 		int totalPage = list.getTotalPages();					//총 페이지 수
@@ -71,9 +70,11 @@ public class NoticeController {
 	}
 	
 	// 공지사항 상세 조회
-	@GetMapping("/notice/{id}/{pageNum}")
-	public String view(@PathVariable("id") long id, Model model, @PathVariable("pageNum") long pageNum) {
-		NoticeDTO noticeDto = noticeService.view(id);
+	@GetMapping("/notice/{id}")
+	public String view(@PathVariable("id") long id, Model model, 
+			NoticeDTO noticeDto, Pageable pageable, @RequestParam("page") int pageNum) {
+		
+		noticeDto = noticeService.view(id);
 		
 		List<AttachFileDTO> fileList = attachfileService.fileList(noticeDto.getAttachFileId());
 		
@@ -93,13 +94,7 @@ public class NoticeController {
 	// 공지사항 등록
 	@PostMapping("/notice/post")
 	public String writef(NoticeDTO noticeDto, HttpServletRequest request, 
-			RedirectAttributes redirectAttributes, MultipartHttpServletRequest multipartRequest,
-			@RequestParam("files") List<MultipartFile> files1,
-			@RequestPart List<MultipartFile> files) {
-		
-		System.out.println("@@@ ==> "+ multipartRequest);
-		System.out.println("@@@ ==> "+ files1);
-		System.out.println("@@@ ==> "+ files);
+			RedirectAttributes redirectAttributes, MultipartHttpServletRequest multipartRequest) {
 		
 		noticeDto.setRegId((String) request.getSession().getAttribute("user_id"));
 		
@@ -117,27 +112,37 @@ public class NoticeController {
 	
 	// 공지사항 수정 폼	
 	@GetMapping("/notice/post/{id}")
-	public String modify(@PathVariable("id") long id, Model model) {		
+	public String modify(@PathVariable("id") long id, Model model, @RequestParam("page") int pageNum) {		
 		
 		NoticeDTO noticeDto = noticeService.view(id);
 		
 		List<AttachFileDTO> fileList = attachfileService.fileList(noticeDto.getAttachFileId());
 		
 		model.addAttribute("fileList", fileList);
-		
+		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("result", noticeDto);
 		
 		return "notice/modify";
 	}
 	// 공지사항 수정	
 	@PutMapping("/notice/post/{id}")
-	public String modifyf(@PathVariable("id") long id) {
-
+	public String modifyf(@PathVariable("id") long id, NoticeDTO noticeDto, RedirectAttributes redirectAttributes,
+			HttpServletRequest request, MultipartHttpServletRequest multipartRequest, @RequestParam("page") int pageNum) {
+		noticeDto.setRegId((String) request.getSession().getAttribute("user_id"));
 		
+		// 기존 첨부 확인		
+		Long fileId = noticeDto.getAttachFileId()==null?0L:noticeDto.getAttachFileId();  
 		
-		System.out.println("!@#!@#modifyf" + id);
+		// 첨부파일 업로드
+		Long attachFileId = attachfileService.save(multipartRequest, fileId, "notice");
+								
+		noticeDto.setAttachFileId(attachFileId);
+		
+		noticeService.save(noticeDto);
 
-		return "notice/modify";
+		redirectAttributes.addFlashAttribute("message", "수정 되었습니다.");
+		
+		return "redirect:/?page="+pageNum;
 	}
 	
 	// 공지사항 삭제
@@ -161,7 +166,6 @@ public class NoticeController {
 		String filePath = uploadPath+fileDto.getFilePath()+"\\"+fileDto.getAliasName();
 		
 		Path path = Paths.get(filePath);
-		System.out.println("경로 => "+uploadPath+fileDto.getFilePath()+"\\"+fileDto.getAliasName()+"."+fileDto.getFileExt());
 
 		Resource resource = new InputStreamResource(Files.newInputStream(path));
 		
@@ -171,5 +175,23 @@ public class NoticeController {
 	            .contentType(MediaType.parseMediaType("application/octet-stream"))
 	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
 	            .body(resource);
+	}
+	
+	// 첨부 삭제
+	@PostMapping("/notice/file/{id}")
+	public ModelAndView fileDelete(HttpServletRequest request, AttachFileDTO fileDto, Model model,
+			@PathVariable("id") Long id) {
+		
+		ModelAndView mav = new ModelAndView();
+		MappingJackson2JsonView jsonView =new MappingJackson2JsonView();
+		mav.setView(jsonView);
+				
+		// 첨부 삭제
+		Map<String, String> resultMap = attachfileService.fileDelete(fileDto); 
+				
+		model.addAttribute("message", resultMap.get("message"));
+		model.addAttribute("deleteResult", resultMap.get("deleteResult"));
+		
+		return mav;
 	}
 }

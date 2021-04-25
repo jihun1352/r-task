@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -32,15 +33,12 @@ public class AttachFileService {
 		Long attachFileId = (long) 0;
 		final Map<String, MultipartFile> files = multipartRequest.getFileMap();
 		File f = new File("upload");
-		
-		String uploadPath = f.getAbsoluteFile().toString();
 
+		String uploadPath = f.getAbsoluteFile().toString();
 		if (!files.isEmpty()) {
 			// 첨부된 파일 개수 체크
 			int chkCnt = 0;
 			for (Map.Entry<String, MultipartFile> entry : files.entrySet()) {
-				String originalName = entry.getValue().getOriginalFilename();
-				if (originalName.equals("")) { continue; }
 				chkCnt++;
 			}
 			
@@ -130,6 +128,7 @@ public class AttachFileService {
 			
 			fileDtoList.add(fileDto);
 		}
+		
 		return fileDtoList;
 	}
 	
@@ -149,4 +148,30 @@ public class AttachFileService {
 		return fileDto;
 	}
 	
+	@Transactional
+	public Map<String, String> fileDelete(AttachFileDTO fileDto) {
+		
+		Map<String, String> resultMap = new HashMap<String, String>();
+		File file = new File("upload");		
+		String uploadPath = file.getAbsoluteFile().toString();
+		
+		file = new File(uploadPath+fileDto.getFilePath()+File.separator+fileDto.getAliasName());
+		
+		if(file.exists()) {
+			boolean fileDelete = file.delete();
+			if(fileDelete) {
+				attachFileRepository.deleteById(fileDto.getId());
+				resultMap.put("message", "파일이 삭제되었습니다.");
+				resultMap.put("deleteResult", "true");
+			} else {
+				resultMap.put("message", "파일삭제 실패하였습니다.");
+				resultMap.put("deleteResult", "false");
+			}
+		} else {	
+			resultMap.put("message", "파일이 존재하지 않습니다.");
+			resultMap.put("deleteResult", "false");
+		}
+		
+		return resultMap;
+	}
 }

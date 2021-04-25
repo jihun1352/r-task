@@ -11,7 +11,6 @@
 						<th style="background-color: #eeeeee; text-align: center;">번호</th>
 						<th style="background-color: #eeeeee; text-align: center;">제목</th>
 						<th style="background-color: #eeeeee; text-align: center;">작성자</th>
-						<th style="background-color: #eeeeee; text-align: center;">첨부파일</th>
 						<th style="background-color: #eeeeee; text-align: center;">작성일</th>
 					</tr>
 				</thead>
@@ -22,9 +21,8 @@
 								<fmt:parseDate value="${result.regDt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both" />
 								<tr>
 									<td>${result.id }</td>
-									<td><a href="/notice/${result.id}/${noticeList.pageable.pageNumber}"><c:out value="${result.subject}"/></a></td>
+									<td><a href="/notice/${result.id}?page=${noticeList.pageable.pageNumber}"><c:out value="${result.subject}"/></a></td>
 									<td><c:out value="${result.regId}"/></td>
-									<td><c:out value="${result.subject}"/></td>
 									<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedDateTime }"/></td>
 								</tr>
 							</c:forEach>	
@@ -70,8 +68,6 @@
 			</div>
 			</div>
 			<!-- 회원만넘어가도록 -->
-			
-	
 	
 			<a href="javascript:fncWrite();" class="btn btn-primary pull-right">글쓰기</a>
 		</div>	

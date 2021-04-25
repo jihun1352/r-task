@@ -30,14 +30,16 @@
 					<tr>
 						<th class="text-center">첨부파일</th>
 						<td class="text-left" colspan="3">
-							<c:forEach var="result" items="${fileList}" varStatus="status">
-								<c:choose>
-									<c:when test="${status.count > 1 }">
-									<br />
-									</c:when>
-								</c:choose>	
-								<a href='/download/${result.id}/${result.attachFileId}'><c:out value="${result.originalName }"/></a>
-							</c:forEach>
+							<c:if test="${fn:length(fileList) > 0 }">
+								<c:forEach var="result" items="${fileList}" varStatus="status">
+									<c:choose>
+										<c:when test="${status.count > 1 }">
+										<br />
+										</c:when>
+									</c:choose>	
+									<a href='/download/${result.id}/${result.attachFileId}'><c:out value="${result.originalName }"/></a>
+								</c:forEach>
+							</c:if>
 						</td>
 					</tr>
 					<tr>	
@@ -49,7 +51,7 @@
 			</table>	
 			<a href="/?page=${pageNum}" class="btn btn-primary text-right">목록</a>
 			<c:if test="${user_id eq result.regId }">
-				<a href="/notice/post/${id}" class="btn btn-primary text-right">수정</a>
+				<a href="/notice/post/${id}?page=${pageNum}" class="btn btn-primary text-right">수정</a>
 				<input type="hidden" name="_method" value="delete">
 				<a href="javascript:fncDelete();" class="btn btn-primary text-right">삭제</a>
 			</c:if>

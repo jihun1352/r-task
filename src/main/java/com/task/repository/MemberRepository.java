@@ -8,5 +8,5 @@ import com.task.domain.Member;
 
 public interface MemberRepository extends JpaRepository<Member, String> {
 	
-	Optional<Member> findByUserId(String userId);
+	public Optional<Member> findByUserId(String userId);
 }

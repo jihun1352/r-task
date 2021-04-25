@@ -11,7 +11,8 @@
 	<!-- 공지사항 수정 페이지 -->
 	<div class="container">
 		<div class="row">
-			<form id="frm" name="frm">
+			<form id="frm" name="frm" enctype="multipart/form-data">
+			<input type="hidden" name="_method" value="put">
 			<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
 					<thead>
 						<tr>
@@ -34,12 +35,23 @@
 									<div class="re_left">
 										<a class="btn btn-default btn-sm"
 											href="javascript:fncAddFile('5');">첨부파일
-											추가</a> &nbsp;&nbsp;&nbsp;<span class="info01 blue">참고&#58;
-											첨부된 첫번째 이미지가 썸네일 이미지가 됩니다</span>
+											추가</a>
 									</div>
 								</div>
+								<c:if test="${fn:length(fileList) > 0 }">
+									<input type="hidden" name="attachFileId" value="${fileList.get(0).attachFileId }"/>
+				                        <c:forEach var="file" items="${fileList }" varStatus="status">
+				                        <div class="reply" id="fileList_<c:out value="${status.index}"/>">
+											<div class="re_left">
+												<a href='/download/${file.id}/${file.attachFileId}'><c:out value="${file.originalName }"/></a>
+												<a class="btn btn-default btn-sm" href="javascript:fncDeleteFileProc('${file.attachFileId }','${file.id}','${file.aliasName }','${status.index }','${file.filePath }');">파일삭제</a>
+											</div>
+										</div>
+				                        </c:forEach>
+				                        </c:if>
 								<div id="fileUpload">
-									<div class="reply" id="fileList_">
+								<c:if test="${fn:length(fileList) < 5 }">
+									<div class="reply" id="fileList_<c:out value="${fn:length(fileList) }" />">
 										<div class="re_left">
 											<input style="display:inline;" type="file" name="file0"><a
 												class="btn btn-default btn-sm"
@@ -47,13 +59,14 @@
 											</a>
 										</div>
 									</div>
+								</c:if>	
 								</div>
 							</div>
 						</td>
 						</tr>
 					</tbody>
 				</table>	
-				<input type="hidden" name="_method" value="put">
+				<!-- <input type="hidden" name="_method" value="put"> -->
 				<a href="javascript:fncModify();" class="btn btn-primary pull-right">수정</a>
 			</form>
 		</div>
@@ -71,7 +84,45 @@
 	function fncModify() {
 		id = "${result.id}";
 		if(confirm("수정 하시겠습니까?")) {
-			$("#frm").attr({"action": "/notice/post/"+id, "method": "post"}).submit();
+			$("#frm").attr({"action": "/notice/post/"+id+"?page=${pageNum}", "method": "post"}).submit();
+		}
+	}
+	
+	// 등록되어 있는 첨부 삭제
+	function fncDeleteFileProc(attachFileId, fileId, aliasName, fileIndex, filePath) {	// 파일 삭제
+		if(fileId == null || fileId == '') {
+			if(confirm("삭제하시겠습니까?")) {
+				$("#fileList_" + fileIndex).remove();
+				$("#fileIndex").val(Number($("#fileIndex").val())-1);
+			}else{
+				return;
+			}
+		} else {
+			if(confirm("선택한 파일을 삭제하시겠습니까?")) {
+				$.ajax({
+					url: '/notice/file/'+fileId,
+					dataType: 'json',
+					type: 'post',
+					data: {
+						attachFileId: attachFileId,
+						fileId: fileId,
+						aliasName: aliasName,
+						filePath: filePath
+					},
+					success: function(e) {
+						if(e.deleteResult){
+							$("#fileList_" + fileIndex).remove();
+							$("#fileIndex").val(Number($("#fileIndex").val())-1);
+							alert('선택한 파일이 삭제되었습니다.');
+						}else{
+							alert(e.message);
+						}
+					},
+					error: function(e) {
+						alert("파일삭제 실패");
+					}
+				});
+			}
 		}
 	}
 </script>

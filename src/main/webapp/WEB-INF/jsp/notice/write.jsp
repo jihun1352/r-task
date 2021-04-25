@@ -34,8 +34,7 @@
 									<div class="re_left">
 										<a class="btn btn-default btn-sm"
 											href="javascript:fncAddFile('5');">첨부파일
-											추가</a> &nbsp;&nbsp;&nbsp;<span class="info01 blue">참고&#58;
-											첨부된 첫번째 이미지가 썸네일 이미지가 됩니다</span>
+											추가</a>
 									</div>
 								</div>
 								<div id="fileUpload">
@@ -61,49 +60,15 @@
 </html>
 <script type="text/javascript">
 	$(document).ready(function(){	
-		
 		if("${message}" != ''){ 	//  메세지
 			alert("${message }");
 		}		
 	});
 
 	function fncWriteIns() {
-		alert("${user_id}");
-		
 		if(confirm("등록하시겠습니까?")) {
 			$("#frm").attr({"action":"/notice/post", "method": "post"}).submit();
 		};
 	}
 	
-	// 파일첨부 태그 추가
-	function fncAddFile(num) {
-		var fileIndex = $("div[id^=fileList_]").length + 1;
-		var fileIndexId = new Date().getTime();
-		if(num > 0 && fileIndex > num){
-			alert("첨부파일은 "+num+"개까지만 가능합니다.");
-			return;
-		}
-		$("#fileIndex").val(fileIndex);
-		var str = '<div class="reply" id="fileList_'+fileIndexId+'" style="margin-top: 5px;" >';
-		str += '<input style="display:inline;" type="file" name="file'+fileIndexId+'" style="margin-right: 5px;"/>';
-		str += "<a href=\"javascript:fncDeleteFile('"+ fileIndexId +"');\" class='btn btn-default btn-sm'>파일삭제</a></div>";
-		$("#fileUpload").append(str);
-	}
-	
-	// 파일첨부 태그 삭제
-	function fncDeleteFile(fileIndexId) {
-		var cnt = $("#fileUpload div").length;
-		
-		var answer = confirm('삭제하시겠습니까?');
-		if(answer){
-			if(cnt < 1){	// 파일첨부 태그 기본 한개는 삭제하지 않고 초기화
-				$("#fileList_" + fileIndexId + " input[type='file']").val('');
-				return;
-			}
-			$("#fileList_" + fileIndexId).remove();
-			$("#fileIndex").val(Number($("#fileIndex").val())-1);
-		}else{
-			return;
-		}
-	}
 </script>
